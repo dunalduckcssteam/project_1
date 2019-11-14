@@ -1,0 +1,112 @@
+<html>
+<head>
+    <link href="/static/css/login.css" type="text/css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    
+</head>
+<body>
+    <div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        <h2 class="login active"> Sign In </h2>
+        <h2 class="sign inactive underlineHover">Sign Up </h2>
+
+        <!-- Icon -->
+        <div class="fadeIn first">
+        <!-- <img src="../static/account.png" id="icon" alt="User Icon" /> -->
+        </div>
+        <!-- Login Form -->
+        <form class="loginForm" action="/main" method="POST">
+            <input type="text" id="ID" class="fadeIn second" name="ID" placeholder="ID">
+            <input type="password" id="password"  class="fadeIn third" name="login" placeholder="password">
+            <input type="button" class="login-btn" value="Log In">
+            <input type="button" class="sign-btn" value="Register" style="display:none">
+        </form>
+
+    </div>
+    </div>
+    <script>
+        const login = document.querySelector(".login")
+        const sign = document.querySelector(".sign")
+        const loginbtn = document.querySelector(".login-btn")
+        const signbtn = document.querySelector(".sign-btn")
+        document.querySelector(".sign").addEventListener("click", function(e){
+            sign.classList.add("active")
+            sign.classList.remove("inactive")
+            sign.classList.remove("underlineHover")
+            login.classList.add("inactive")
+            login.classList.add("underlineHover")
+            login.classList.remove("active")
+            loginbtn.style.display="none"
+            signbtn.style.display=""
+            
+        })
+        document.querySelector(".login").addEventListener("click", function(e){
+            sign.classList.remove("active")
+            sign.classList.add("inactive")
+            sign.classList.add("underlineHover")
+            login.classList.remove("inactive")
+            login.classList.remove("underlineHover")
+            login.classList.add("active")
+            loginbtn.style.display=""
+            signbtn.style.display="none"
+        })
+        document.querySelector(".sign-btn").addEventListener("click", function(e){
+            const ID = document.querySelector("#ID").value;
+            const PW = document.querySelector("#password").value;
+
+            const request = $.ajax({   
+                url: "/test2/",
+                type: "POST",
+                data: {ID : ID, PW:PW},
+                dataType: "json"
+            });
+            request.done(function(data) {   
+                if(data.success){
+                    alert("회원가입 성공");
+                    sign.classList.remove("active")
+                    sign.classList.add("inactive")
+                    sign.classList.add("underlineHover")
+                    login.classList.remove("inactive")
+                    login.classList.remove("underlineHover")
+                    login.classList.add("active")
+                    loginbtn.style.display=""
+                    signbtn.style.display="none"
+                } 
+                else if(!data.success && data.duplicate){
+                    alert("중복된 아이디 입니다.");
+                }
+            });   
+        })
+        function loginForm(){
+            const ID = document.querySelector("#ID").value;
+            const PW = document.querySelector("#password").value;
+
+            const request = $.ajax({   
+                url: "/test/",
+                type: "POST",
+                data: {ID :ID, PW :PW},
+                dataType: "json"
+            });
+            request.done(function(data) {
+                if(data.success == true){
+                    document.querySelector("#password").value = ""
+                    document.querySelector(".loginForm").submit()
+                }
+                else{
+                    alert("아이디와 비밀번호를 확인해주세요.")
+                }
+            })
+        }
+        document.querySelector(".login-btn").addEventListener("click", function(){
+            loginForm()
+        })
+        document.querySelector("#password").addEventListener("onkeyup", function(){
+            if(event.keyCode == 13){
+            loginForm()
+         }
+        })
+            
+    </script>
+</body>
+</html>
